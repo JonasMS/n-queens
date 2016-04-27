@@ -177,19 +177,35 @@
       return false;
     },
 
-
-
     // Minor Diagonals - go from top-right to bottom-left
     // --------------------------------------------------------------
     //
     // test if a specific minor diagonal on this board contains a conflict
-    hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
-    },
+    hasMinorDiagonalConflictAt: function(rowIdx, colIdx) {
+      // var n = this.attributes.n;
+      var board = this.attributes;
+
+      for (var i = rowIdx + 1, j = colIdx - 1; i >= 0 && j >= 0; i++, j--) {
+        if ( board[i][j] === 1 ) {
+          return true;
+        }
+      }
+      return false;
+    },    
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
-      return false; // fixme
+      var n = this.attributes.n;
+
+      for (var rowIdx = 0; rowIdx < n; rowIdx++) {
+        var colIdx = this.attributes[rowIdx].lastIndexOf(1);
+        if ( colIdx > -1 ) {
+          if ( this.hasMinorDiagonalConflictAt(rowIdx, colIdx) ) {
+            return true;
+          }
+        }
+      }
+      return false;
     }
 
     /*--------------------  End of Helper Functions  ---------------------*/
