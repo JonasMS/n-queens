@@ -115,11 +115,29 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
-      return false;
+      //for every row check index colIndex
+      var n = this.attributes.n;
+      var column = [];
+      for (var i = 0; i < n; i++) {
+        column.push(this.attributes[i][colIndex]);
+      }
+
+      var result = column.reduce(function(sum, curVal) {
+        return sum + curVal;
+      });
+
+      return result > 1; 
     },
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
+      //for n pass col[n] to hasColConflictAt
+      var n = this.attributes.n;
+      for (var i = 0; i < n; i++) {
+        if ( this.hasColConflictAt(i) ) {
+          return true;
+        }
+      }
       return false;
     },
 
@@ -129,13 +147,33 @@
     // --------------------------------------------------------------
     //
     // test if a specific major diagonal on this board contains a conflict
-    hasMajorDiagonalConflictAt: function(majorDiagonalRowIndexAtFirstColumn, majorDiagonalColumnIndexAtFirstRow) {
+    hasMajorDiagonalConflictAt: function(rowIdx, colIdx) {
+      //check MajorDiags starting at rowIdx, colIdx
+      var n = this.attributes.n;
+      var board = this.attributes;
+
+      for (var i = rowIdx + 1, j = colIdx + 1; i < n && j < n; i++, j++) {
+        if ( board[i][j] === 1 ) {
+          return true;
+        }
+      }
       return false;
-      // return -1;
     },
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
+      //check each row for a chess piece
+        //call hasMajorDiag on piece's coordinates
+      var n = this.attributes.n;
+
+      for (var rowIdx = 0; rowIdx < n - 1; rowIdx++) {
+        var colIdx = this.attributes[rowIdx].indexOf(1);
+        if ( colIdx > -1 ) {
+          if ( this.hasMajorDiagonalConflictAt(rowIdx, colIdx) ) {
+            return true;
+          }
+        }
+      }
       return false;
     },
 
