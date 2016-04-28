@@ -68,7 +68,7 @@ window.hasMajorDiagConflict = function(matrix) {
 
 window.hasMinorDiagConflictAt = function(matrix, rowIdx, colIdx, n) {
   if ( n > 1) {
-    for (var i = rowIdx + 1, j = colIdx - 1; i >= 0 && j >= 0; i++, j--) {
+    for (var i = rowIdx + 1, j = colIdx - 1; i < n && j >= 0; i++, j--) {
       if ( matrix[i][j] === 1 ) {
         return true;
       }
@@ -128,19 +128,32 @@ window.findNQueensSolution = function(n) {
 
     //filter out all permutations that have conflicts
     var solution = _.filter(allPermutations, function(matrix) {
-      return !( hasMinorDiagConflictAt(matrix) || hasMajorDiagConflict(matrix) );
+      return !( hasMinorDiagConflict(matrix) || hasMajorDiagConflict(matrix) );
     });
 
   } else { return matrix; }
 
   console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
-  return solution[0];
+  return solution.length ? solution[0] : createMatrix(n);
+  
 };
 
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
 window.countNQueensSolutions = function(n) {
-  var solutionCount = undefined; //fixme
+  var matrix = findNRooksSolution(n);
+
+  if ( n > 0 ) {
+
+    //make all permutations
+    var allPermutations = permutator(matrix);
+
+    //filter out all permutations that have conflicts
+    var solution = _.filter(allPermutations, function(matrix) {
+      return !( hasMinorDiagConflict(matrix) || hasMajorDiagConflict(matrix) );
+    });
+
+  } else { return 0; }
 
   console.log('Number of solutions for ' + n + ' queens:', solutionCount);
-  return solutionCount;
+  return solution.length ? solution.length : 0;
 };

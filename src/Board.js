@@ -191,7 +191,7 @@
       var n = this.attributes.n;
       var board = this.attributes;
       if ( n > 1) {
-        for (var i = rowIdx + 1, j = colIdx - 1; i >= 0 && j >= 0; i++, j--) {
+        for (var i = rowIdx + 1, j = colIdx - 1; i < n && j >= 0; i++, j--) {
           if ( board[i][j] === 1 ) {
             return true;
           }
