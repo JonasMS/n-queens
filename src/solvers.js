@@ -26,7 +26,6 @@ window.createMatrix = function(n) {
 window.permutator = function(arr) {
   var permutations = [];
   if (arr.length === 0) {
-    console.log(arr);
     return [arr];
   }
 
@@ -38,6 +37,59 @@ window.permutator = function(arr) {
     }
   }
   return permutations;
+};
+
+window.hasMajorDiagConflictAt = function(matrix, rowIdx, colIdx, n) {
+  if ( n > 1 ) {
+    for (var i = rowIdx + 1, j = colIdx + 1; i < n && j < n; i++, j++) {
+      if ( matrix[i][j] === 1 ) {
+        return true;
+      }
+    }
+  } 
+  return false;
+};
+
+//TODO: maybe optimize this function
+window.hasMajorDiagConflict = function(matrix) {
+  var n = matrix[0].length;
+  if (n > 1) {
+    for (var rowIdx = 0; rowIdx < n - 1; rowIdx++) {
+      var colIdx = matrix[rowIdx].indexOf(1);
+      if ( colIdx > -1 ) {
+        if ( this.hasMajorDiagConflictAt(matrix, rowIdx, colIdx, n) ) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+};
+
+window.hasMinorDiagConflictAt = function(matrix, rowIdx, colIdx, n) {
+  if ( n > 1) {
+    for (var i = rowIdx + 1, j = colIdx - 1; i >= 0 && j >= 0; i++, j--) {
+      if ( matrix[i][j] === 1 ) {
+        return true;
+      }
+    }
+  }
+  return false;
+};
+
+window.hasMinorDiagConflict = function(matrix) {
+  var n = matrix[0].length;
+  if (n > 1) {
+    for (var rowIdx = 0; rowIdx < n; rowIdx++) {
+      var colIdx = matrix[rowIdx].lastIndexOf(1);
+      if ( colIdx > -1 ) {
+        if ( this.hasMinorDiagConflictAt(matrix, rowIdx, colIdx, n) ) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
 };
 
 window.findNRooksSolution = function(n) {
@@ -55,28 +107,34 @@ window.findNRooksSolution = function(n) {
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
-  var solutionCount = undefined; //fixme
-  var unsafeRows = [];
-  var unsafeCols = [];
 
   var matrix = findNRooksSolution(n);
-  var firstRow = matrix.shift();
+  //var firstRow = matrix.shift();
 
-  var matrix = permutator(matrix);
+  matrix = permutator(matrix);
 
-
-
-
-  console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
+  console.log('Number of solutions for ' + n + ' rooks:', matrix.length);
   return matrix.length;
 };
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
 window.findNQueensSolution = function(n) {
-  var solution = undefined; //fixme
+  var matrix = findNRooksSolution(n);
+
+  if ( n > 0 ) {
+
+    //make all permutations
+    var allPermutations = permutator(matrix);
+
+    //filter out all permutations that have conflicts
+    var solution = _.filter(allPermutations, function(matrix) {
+      return !( hasMinorDiagConflictAt(matrix) || hasMajorDiagConflict(matrix) );
+    });
+
+  } else { return matrix; }
 
   console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
-  return solution;
+  return solution[0];
 };
 
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
