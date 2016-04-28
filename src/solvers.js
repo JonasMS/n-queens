@@ -23,6 +23,23 @@ window.createMatrix = function(n) {
   return matrix;
 };
 
+window.permutator = function(arr) {
+  var permutations = [];
+  if (arr.length === 0) {
+    console.log(arr);
+    return [arr];
+  }
+
+  for (var i = 0; i < arr.length; i++) {
+    var subPerms = permutator(arr.slice(0, i).concat(arr.slice(i + 1)));
+    for (var j = 0; j < subPerms.length; j++) {
+      subPerms[j].unshift(arr[i]);
+      permutations.push(subPerms[j]);
+    }
+  }
+  return permutations;
+};
+
 window.findNRooksSolution = function(n) {
   var solution = [];
 
@@ -42,45 +59,16 @@ window.countNRooksSolutions = function(n) {
   var unsafeRows = [];
   var unsafeCols = [];
 
-  var matrix = createMatrix(n);
+  var matrix = findNRooksSolution(n);
+  var firstRow = matrix.shift();
 
+  var matrix = permutator(matrix);
 
-  var permutator = function(arr) {
-    var permutations = [];
-    if (arr.length === 0) {
-      return [];
-    }
-
-    for (var i = 0; i < arr.length; i++) {
-      var subPerms = permutator(arr.slice(0, i).concat(arr.slice(i + 1)));
-      for (var j = 0; j < subPerms.length; j++) {
-        subPerms[j].unshift(arr[i]);
-        permutations.push(subPerms[j]);
-      }
-    }
-    return permutations;
-  };
-
-  /*var newSolution = function(matrix) {
-
-    //place a rook in a non-conflicting position
-    //TODO: change n, not efficient
-    for (var row = 0; row < n; row++) {
-      for (var col = 0; col < n; col++) {
-        if ( !_.contains(unsafeCols, col) ) {
-          matrix[row][col]++;
-          unsafeCols.push(col);
-          newSolution(matrix);
-          break;
-        }
-      }
-    }
-  };*/
 
 
 
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
-  return solutionCount;
+  return matrix.length;
 };
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
