@@ -127,14 +127,14 @@ window.findNQueensSolution = function(n) {
     var allPermutations = permutator(matrix);
 
     //filter out all permutations that have conflicts
-    var solution = _.filter(allPermutations, function(matrix) {
+    var solutions = _.filter(allPermutations, function(matrix) {
       return !( hasMinorDiagConflict(matrix) || hasMajorDiagConflict(matrix) );
     });
 
   } else { return matrix; }
 
-  console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
-  return solution.length ? solution[0] : createMatrix(n);
+  console.log('Single solution for ' + n + ' queens:', JSON.stringify(solutions));
+  return solutions.length ? solutions[0] : createMatrix(n);
   
 };
 
@@ -148,12 +148,12 @@ window.countNQueensSolutions = function(n) {
     var allPermutations = permutator(matrix);
 
     //filter out all permutations that have conflicts
-    var solution = _.filter(allPermutations, function(matrix) {
+    var solutions = _.filter(allPermutations, function(matrix) {
       return !( hasMinorDiagConflict(matrix) || hasMajorDiagConflict(matrix) );
     });
 
-  } else { return 0; }
+  } else { return 1; }
 
-  console.log('Number of solutions for ' + n + ' queens:', solutionCount);
-  return solution.length ? solution.length : 0;
+  console.log('Number of solutions for ' + n + ' queens:', solutions.length);
+  return solutions.length ? solutions.length : 0;
 };
